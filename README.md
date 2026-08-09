@@ -82,6 +82,23 @@ User: What is the primary architecture of RAGnarok?
 RAGnarok: RAGnarok utilizes a direct integration between the Gemini API for embeddings/generation and MongoDB Atlas Vector Search for semantic retrieval, executing the entire pipeline in pure C++ without intermediate wrappers.
 ```
 
+## 🧠 Building the "Brain" (Data Ingestion)
+
+While the RAGnarok execution engine is built entirely in uncompromised C++, we've included an AI-powered Python ingestion pipeline to rapidly populate your vector database with knowledge. 
+
+Located in `scripts/ingest_w3schools.py`, this custom scraper:
+1. **Crawls** targeted sites (like the W3Schools Python tutorial) mimicking a real browser.
+2. **Cleans & Chunks** the HTML into bite-sized, semantically logical pieces.
+3. **Embeds** the chunks using the **Gemini API** (`text-embedding-004`).
+4. **Ingests** everything directly into your **MongoDB Atlas** cluster.
+
+To run it and build your own "Brain":
+```bash
+cd scripts
+pip install -r requirements.txt
+python ingest_w3schools.py
+```
+
 ## 👨‍💻 Author
 
 **Aadarsh Kumar Gupta**

@@ -1,0 +1,20 @@
+mongodb://root:fYG50rzJhR2dw9gfbEnbKYuyW9Plb99TaIrIcJN3Xakr8vwrre1aXFQBTQSdwhgW@167.86.123.157:4484/?directConnection=true
+
+AQ.Ab8RN6I8q6B8dXpW4a0ss-j_3xtCDl5_jOXX1mKSs_x_ze3a3w
+
+
+curl "https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent" \
+  -H 'Content-Type: application/json' \
+  -H 'X-goog-api-key: AQ.Ab8RN6I8q6B8dXpW4a0ss-j_3xtCDl5_jOXX1mKSs_x_ze3a3w' \
+  -X POST \
+  -d '{
+    "contents": [
+      {
+        "parts": [
+          {
+            "text": "Explain how AI works in a few words"
+          }
+        ]
+      }
+    ]
+  }'
