@@ -1,0 +1,9 @@
+{
+  "name": "ragnarok",
+  "version-string": "0.1.0",
+  "dependencies": [
+    "cpr",
+    "nlohmann-json",
+    "mongo-cxx-driver"
+  ]
+}
