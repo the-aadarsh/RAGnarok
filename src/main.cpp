@@ -27,6 +27,9 @@ std::unordered_map<std::string, std::string> load_env(const std::string& filepat
 }
 
 int main() {
+    std::cout << "========================================" << std::endl;
+    std::cout << "       ⚡ RAGnarok.cpp Engine ⚡       " << std::endl;
+    std::cout << "========================================" << std::endl;
     std::cout << "> Initialize System... [OK]" << std::endl;
 
     // Initialize MongoDB Driver exactly once
@@ -44,7 +47,8 @@ int main() {
 
     try {
         // Initialize clients
-        ragnarok::db::MongoDBClient db_client(mongo_uri, "ragnarok", "documents");
+        ragnarok::db::MongoDBClient db_client(mongo_uri, "ragnarok", "knowledge_base");
+        std::cout << "> Connection to MongoDB Atlas... [ESTABLISHED]" << std::endl;
         ragnarok::llm::GeminiClient llm_client(gemini_key);
 
         // Initialize RAG Engine (Connects DB and LLM)

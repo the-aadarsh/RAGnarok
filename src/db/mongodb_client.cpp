@@ -83,5 +83,38 @@ std::vector<SearchResult> MongoDBClient::vector_search(const std::vector<float>&
     return results;
 }
 
+void MongoDBClient::upsert(const std::string& id, const std::string& url, const std::string& title, const std::string& content, const std::vector<float>& embedding) {
+    try {
+        using namespace bsoncxx::builder::stream;
+        auto embedding_array = bsoncxx::builder::basic::array{};
+        for (float f : embedding) {
+            embedding_array.append(static_cast<double>(f));
+        }
+
+        auto doc = document{}
+            << "_id" << id
+            << "url" << url
+            << "title" << title
+            << "content" << content
+            << "embedding" << embedding_array
+            << finalize;
+
+        auto filter = document{}
+            << "_id" << id
+            << finalize;
+
+        auto update = document{}
+            << "$set" << doc
+            << finalize;
+
+        mongocxx::options::update options;
+        options.upsert(true);
+
+        collection_.update_one(filter.view(), update.view(), options);
+    } catch (const std::exception& e) {
+        std::cerr << "[MongoDB] Upsert failed: " << e.what() << std::endl;
+    }
+}
+
 } // namespace db
 } // namespace ragnarok

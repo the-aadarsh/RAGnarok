@@ -25,7 +25,12 @@ std::vector<float> GeminiClient::embed_content(const std::string& text) {
 
     cpr::Response r = cpr::Post(cpr::Url{url},
                                 cpr::Header{{"Content-Type", "application/json"}},
-                                cpr::Body{payload.dump()});
+                                cpr::Body{payload.dump()},
+                                cpr::Timeout{10000});
+
+    if (r.error) {
+        throw std::runtime_error("Network error connecting to Gemini API (Embedding): " + r.error.message);
+    }
 
     if (r.status_code != 200) {
         throw std::runtime_error("Gemini API Error (Embedding): " + r.text);
@@ -60,7 +65,12 @@ std::string GeminiClient::generate_content(const std::string& prompt) {
 
     cpr::Response r = cpr::Post(cpr::Url{url},
                                 cpr::Header{{"Content-Type", "application/json"}},
-                                cpr::Body{payload.dump()});
+                                cpr::Body{payload.dump()},
+                                cpr::Timeout{10000});
+
+    if (r.error) {
+        throw std::runtime_error("Network error connecting to Gemini API (Generation): " + r.error.message);
+    }
 
     if (r.status_code != 200) {
         throw std::runtime_error("Gemini API Error (Generation): " + r.text);

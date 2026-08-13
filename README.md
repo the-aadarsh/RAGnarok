@@ -43,6 +43,19 @@ Before you compile, ensure your environment meets the strict requirements:
 * **CMake**: Version 3.20 or newer
 * **vcpkg**: Configured and integrated with CMake
 * **MongoDB Atlas Account**: An active cluster with Vector Search configured
+  * You MUST create a Vector Search Index named `vector_index` on the `ragnarok.knowledge_base` collection:
+    ```json
+    {
+      "fields": [
+        {
+          "numDimensions": 768,
+          "path": "embedding",
+          "similarity": "cosine",
+          "type": "vector"
+        }
+      ]
+    }
+    ```
 * **Gemini API Key**: For embedding generation and LLM inference
 
 ## 🚀 Quick Start

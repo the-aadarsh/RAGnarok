@@ -124,7 +124,7 @@ def get_embedding(text):
     """Generate embedding using Gemini API."""
     try:
         result = gemini_client.models.embed_content(
-            model="gemini-embedding-2",
+            model="text-embedding-004",
             contents=text,
             config=types.EmbedContentConfig(task_type="RETRIEVAL_DOCUMENT")
         )
