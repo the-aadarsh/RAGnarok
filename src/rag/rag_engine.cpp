@@ -13,19 +13,26 @@ RAGEngine::RAGEngine(ragnarok::db::MongoDBClient& db_client, ragnarok::llm::Gemi
 
 std::string RAGEngine::build_prompt(const std::string& query, const std::vector<ragnarok::db::SearchResult>& results) {
     std::ostringstream prompt;
-    prompt << "You are an AI assistant powered by a Retrieval-Augmented Generation (RAG) system.\n";
-    prompt << "Use the following retrieved context to answer the user's question.\n";
-    prompt << "If the answer is not contained within the context, state that you do not know.\n\n";
-    prompt << "CONTEXT:\n";
+    prompt << "You are RAGnarok, an expert AI assistant powered by a high-performance Retrieval-Augmented Generation engine.\n\n";
+    prompt << "INSTRUCTIONS:\n";
+    prompt << "- Synthesize the retrieved context below into a comprehensive, well-structured answer.\n";
+    prompt << "- Write in a clear, engaging, and informative tone. Provide depth and insight, not just surface-level bullet points.\n";
+    prompt << "- Where appropriate, include examples, explanations, and practical details.\n";
+    prompt << "- Use markdown formatting for readability (headings, bold, code blocks, etc.).\n";
+    prompt << "- If the context does not contain enough information, say so honestly, but share what you can infer.\n";
+    prompt << "- Cite the source URL when referencing specific information.\n\n";
+    prompt << "---\n\n";
+    prompt << "RETRIEVED CONTEXT:\n\n";
     
-    for (const auto& res : results) {
-        prompt << "Title: " << res.title << "\n";
-        prompt << "Content: " << res.content << "\n";
-        prompt << "URL: " << res.url << "\n\n";
+    for (size_t i = 0; i < results.size(); ++i) {
+        prompt << "[" << (i + 1) << "] Title: " << results[i].title << "\n";
+        prompt << "    Content: " << results[i].content << "\n";
+        prompt << "    Source: " << results[i].url << "\n\n";
     }
 
-    prompt << "USER QUESTION: " << query << "\n";
-    prompt << "ANSWER:\n";
+    prompt << "---\n\n";
+    prompt << "USER QUESTION: " << query << "\n\n";
+    prompt << "Provide a thorough, well-organized answer:\n";
     return prompt.str();
 }
 
@@ -34,7 +41,7 @@ std::string RAGEngine::ask(const std::string& query) {
     auto query_embedding = llm_client_.embed_content(query);
 
     std::cout << "[RAG Engine] Retrieving relevant chunks from MongoDB Atlas..." << std::endl;
-    auto search_results = db_client_.vector_search(query_embedding, 3); // Get top 3 chunks
+    auto search_results = db_client_.vector_search(query_embedding, 5); // Get top 5 chunks
 
     std::cout << "[RAG Engine] Retrieved " << search_results.size() << " chunks. Generating response..." << std::endl;
     std::string prompt = build_prompt(query, search_results);

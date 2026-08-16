@@ -47,7 +47,7 @@ int main() {
 
     try {
         // Initialize clients
-        ragnarok::db::MongoDBClient db_client(mongo_uri, "ragnarok", "documents");
+        ragnarok::db::MongoDBClient db_client(mongo_uri, "ragnarok", "knowledge_base");
         ragnarok::llm::GeminiClient llm_client(gemini_key);
 
         // Initialize RAG Engine (Connects DB and LLM)
