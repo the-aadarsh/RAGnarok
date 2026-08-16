@@ -10,7 +10,6 @@ MongoDBClient::MongoDBClient(const std::string& uri, const std::string& db_name,
     : client_(mongocxx::uri{uri}),
       db_(client_[db_name]),
       collection_(db_[coll_name]) {
-    std::cout << "[MongoDB] Connected to database: " << db_name << ", collection: " << coll_name << std::endl;
 }
 
 std::vector<SearchResult> MongoDBClient::vector_search(const std::vector<float>& query_embedding, int limit) {

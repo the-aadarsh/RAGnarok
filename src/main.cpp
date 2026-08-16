@@ -7,7 +7,6 @@
 #include "ragnarok/llm/gemini_client.hpp"
 #include "ragnarok/rag/rag_engine.hpp"
 
-// Simple .env parser to avoid adding a heavy dependency
 std::unordered_map<std::string, std::string> load_env(const std::string& filepath) {
     std::unordered_map<std::string, std::string> env;
     std::ifstream file(filepath);
@@ -30,39 +29,27 @@ std::unordered_map<std::string, std::string> load_env(const std::string& filepat
 }
 
 int main() {
-    std::cout << "========================================" << std::endl;
-    std::cout << "       ⚡ RAGnarok.cpp Engine ⚡       " << std::endl;
-    std::cout << "========================================" << std::endl;
-    std::cout << "> Initialize System... [OK]" << std::endl;
+    std::cout << "RAGnarok.cpp Engine" << std::endl;
+    std::cout << "Initializing..." << std::endl;
 
-    // Initialize MongoDB Driver exactly once
     mongocxx::instance inst{};
 
-    // Load environment variables from .env
     auto env = load_env(".env");
     if (env.find("MONGO_URI") == env.end() || env.find("GEMINI_API_KEY") == env.end()) {
-        std::cerr << "Error: MONGO_URI or GEMINI_API_KEY not found in .env" << std::endl;
+        std::cerr << "Error: missing MONGO_URI or GEMINI_API_KEY in .env" << std::endl;
         return 1;
     }
 
-    std::string mongo_uri = env["MONGO_URI"];
-    std::string gemini_key = env["GEMINI_API_KEY"];
-
     try {
-        // Initialize clients
-        ragnarok::db::MongoDBClient db_client(mongo_uri, "ragnarok", "knowledge_base");
-        std::cout << "> Connection to MongoDB Atlas... [ESTABLISHED]" << std::endl;
-
-        ragnarok::llm::GeminiClient llm_client(gemini_key);
-
-        // Initialize RAG Engine (Connects DB and LLM)
+        ragnarok::db::MongoDBClient db_client(env["MONGO_URI"], "ragnarok", "knowledge_base");
+        ragnarok::llm::GeminiClient llm_client(env["GEMINI_API_KEY"]);
         ragnarok::rag::RAGEngine engine(db_client, llm_client);
-        std::cout << "> LLM Pipeline... [READY]\n" << std::endl;
+        
+        std::cout << "Ready.\n" << std::endl;
 
-        // Interactive CLI loop
         std::string query;
         while (true) {
-            std::cout << "\nUser: ";
+            std::cout << "User: ";
             if (!std::getline(std::cin, query) || query == "exit" || query == "quit") {
                 break;
             }
@@ -72,7 +59,7 @@ int main() {
             std::cout << "RAGnarok: " << answer << std::endl;
         }
     } catch (const std::exception& e) {
-        std::cerr << "Fatal Error: " << e.what() << std::endl;
+        std::cerr << "Error: " << e.what() << std::endl;
         return 1;
     }
 
