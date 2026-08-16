@@ -62,13 +62,13 @@ std::vector<SearchResult> MongoDBClient::vector_search(const std::vector<float>&
         for (auto&& doc : cursor) {
             SearchResult res;
             if (doc["title"]) {
-                res.title = doc["title"].get_string().value.to_string();
+                res.title = std::string(doc["title"].get_string().value);
             }
             if (doc["content"]) {
-                res.content = doc["content"].get_string().value.to_string();
+                res.content = std::string(doc["content"].get_string().value);
             }
             if (doc["url"]) {
-                res.url = doc["url"].get_string().value.to_string();
+                res.url = std::string(doc["url"].get_string().value);
             }
             if (doc["score"]) {
                 res.score = doc["score"].get_double().value;

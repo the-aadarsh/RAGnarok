@@ -12,10 +12,10 @@ using json = nlohmann::json;
 GeminiClient::GeminiClient(const std::string& api_key) : api_key_(api_key) {}
 
 std::vector<float> GeminiClient::embed_content(const std::string& text) {
-    std::string url = base_url_ + "text-embedding-004:embedContent?key=" + api_key_;
+    std::string url = base_url_ + "gemini-embedding-2:embedContent";
 
     json payload = {
-        {"model", "models/text-embedding-004"},
+        {"model", "models/gemini-embedding-2"},
         {"content", {
             {"parts", {
                 {{"text", text}}
@@ -24,7 +24,8 @@ std::vector<float> GeminiClient::embed_content(const std::string& text) {
     };
 
     cpr::Response r = cpr::Post(cpr::Url{url},
-                                cpr::Header{{"Content-Type", "application/json"}},
+                                cpr::Header{{"Content-Type", "application/json"},
+                                            {"x-goog-api-key", api_key_}},
                                 cpr::Body{payload.dump()},
                                 cpr::Timeout{10000});
 
@@ -51,7 +52,7 @@ std::vector<float> GeminiClient::embed_content(const std::string& text) {
 }
 
 std::string GeminiClient::generate_content(const std::string& prompt) {
-    std::string url = base_url_ + "gemini-3.6-flash:generateContent?key=" + api_key_;
+    std::string url = base_url_ + "gemini-3.6-flash:generateContent";
 
     json payload = {
         {"contents", {
@@ -64,7 +65,8 @@ std::string GeminiClient::generate_content(const std::string& prompt) {
     };
 
     cpr::Response r = cpr::Post(cpr::Url{url},
-                                cpr::Header{{"Content-Type", "application/json"}},
+                                cpr::Header{{"Content-Type", "application/json"},
+                                            {"x-goog-api-key", api_key_}},
                                 cpr::Body{payload.dump()},
                                 cpr::Timeout{10000});
 

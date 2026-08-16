@@ -20,6 +20,9 @@ std::unordered_map<std::string, std::string> load_env(const std::string& filepat
         if (delimiter_pos != std::string::npos) {
             std::string key = line.substr(0, delimiter_pos);
             std::string value = line.substr(delimiter_pos + 1);
+            if (!value.empty() && value.back() == '\r') {
+                value.pop_back();
+            }
             env[key] = value;
         }
     }
