@@ -3,6 +3,8 @@
 #include "ragnarok/db/mongodb_client.hpp"
 #include "ragnarok/llm/gemini_client.hpp"
 #include <string>
+#include <vector>
+#include <utility>
 
 namespace ragnarok {
 namespace rag {
@@ -18,6 +20,7 @@ private:
 
     ragnarok::db::MongoDBClient& db_client_;
     ragnarok::llm::GeminiClient& llm_client_;
+    std::vector<std::pair<std::string, std::string>> history_;
 };
 
 } // namespace rag

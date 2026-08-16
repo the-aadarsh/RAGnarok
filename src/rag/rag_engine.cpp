@@ -30,9 +30,19 @@ std::string RAGEngine::build_prompt(const std::string& query, const std::vector<
         prompt << "    Source: " << results[i].url << "\n\n";
     }
 
+    if (!history_.empty()) {
+        prompt << "CONVERSATION HISTORY:\n";
+        for (const auto& h : history_) {
+            prompt << "User: " << h.first << "\n";
+            prompt << "Assistant: " << h.second << "\n";
+        }
+        prompt << "\n";
+    }
+
     prompt << "---\n\n";
     prompt << "USER QUESTION: " << query << "\n\n";
     prompt << "Provide a thorough, well-organized answer:\n";
+
     return prompt.str();
 }
 
@@ -46,7 +56,9 @@ std::string RAGEngine::ask(const std::string& query) {
     std::cout << "[RAG Engine] Retrieved " << search_results.size() << " chunks. Generating response..." << std::endl;
     std::string prompt = build_prompt(query, search_results);
 
-    return llm_client_.generate_content(prompt);
+    std::string answer = llm_client_.generate_content(prompt);
+    history_.push_back({query, answer});
+    return answer;
 }
 
 } // namespace rag

@@ -23,6 +23,9 @@ public:
     // Perform a vector search using an embedding
     std::vector<SearchResult> vector_search(const std::vector<float>& query_embedding, int limit = 3);
 
+    // Upsert a document with its vector embedding
+    void upsert(const std::string& id, const std::string& url, const std::string& title, const std::string& content, const std::vector<float>& embedding);
+
 private:
     mongocxx::client client_;
     mongocxx::database db_;
